@@ -24,24 +24,37 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
 
 
 function App() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://xivapi.com');
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []); // The empty dependency array ensures the effect runs only once when the component mounts
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          XIVapi
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div>
+          {/* Display your data here */}
+          <p>{data && data.someProperty}</p>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;
